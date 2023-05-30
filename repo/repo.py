@@ -9,20 +9,40 @@ intents.members = True  # Enable the 'members' intent
 # Create a new bot instance
 bot = commands.Bot(command_prefix='@', intents=intents)
 
-# bible
+# Bot subroutine
 def scrape_repos(username):
+    
+    # String together the username with an F String
     url = f"https://github.com/{username}?tab=repositories"
+    
+    # Send HTTP GET REQUEST
     response = requests.get(url)
-
+    
+    # Check if actually active from status code 200
     if response.status_code == 200:
+        
+        # Convert the response into HTML
         soup = BeautifulSoup(response.content, "html.parser")
+        
+        # Get Repos from class attribute
         repo_list = soup.find_all("div", class_="col-10 col-lg-9 d-inline-block")
+        
+        # Make Repo Array
         repos = []
-
+        
+        # Itteration
         for repo in repo_list:
+            
+            # Itterate name A tag and strip the name from the tag
             repo_name = repo.find("a").get_text().strip()
+            
+            # String together again with f string the username/repo_name
             repo_link = f"https://github.com/{username}/{repo_name}"
+            
+            # String together bot response
             terminal_text = f"[{repo_name}]({repo_link})"
+            
+            # Append repos
             repos.append(terminal_text)
 
         return repos
@@ -84,6 +104,6 @@ async def on_message(message):
     await bot.process_commands(message)
 
 # Run the bot
-bot.run("THE BOT'S TOKEN")
+bot.run("THE BOT'S TOKEN") #nt
 
 # inv link -> https://discord.com/api/oauth2/authorize?client_id=1113029016379740180&permissions=1634772449344&scope=bot
